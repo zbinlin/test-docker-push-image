@@ -14,7 +14,7 @@ jobs:
               run: docker build . --file Dockerfile --tag "${GITHUB_REPOSITORY}":"${GITHUB_REF##*/}"
             - name: Login Docker Hub
               env:
-                  DOCKER_USERNAME: "${GITHUB_ACTOR}"
+                  DOCKER_USERNAME: ${{ github.repository_owner }}
                   DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
               run: echo -n "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
             - name: Publish the Docker image
