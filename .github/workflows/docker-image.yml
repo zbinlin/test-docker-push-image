@@ -10,6 +10,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
+            - id: set-tag-name-into-env
+              run: echo "::set-env name=TAG_NAME::${GITHUB_REF##*/}"
+            - name: Build the Docker image
+              env:
+                  TARGET_VERSION: ${{ env.TAG_NAME }}
+              run: echo $TARGET_VERSION
             - name: Build the Docker image
               run: docker build . --file Dockerfile --tag "${GITHUB_REPOSITORY}"
             - name: Login Docker Hub
