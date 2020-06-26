@@ -11,11 +11,11 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Build the Docker image
-              run: docker build . --file Dockerfile --tag "${GITHUB_REPOSITORY}":"${GITHUB_REF##*/}"
+              run: docker build . --file Dockerfile --tag "${GITHUB_REPOSITORY}"
             - name: Login Docker Hub
               env:
                   DOCKER_USERNAME: ${{ github.repository_owner }}
                   DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
               run: echo -n "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
             - name: Publish the Docker image
-              run: docker push "${GITHUB_REPOSITORY}":"${GITHUB_REF##*/}"
+              run: docker tag "${GITHUB_REPOSITORY}" "${GITHUB_REPOSITORY}":"${GITHUB_REF##*/}" && docker push "${GITHUB_REPOSITORY}"
