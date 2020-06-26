@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+    push:
+        tags:
+            - v*.*.*
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build the Docker image
+              run: docker build . --file Dockerfile --tag "${GITHUB_REPOSITORY}":"${GITHUB_REF##*/}"
+            - name: Login Docker Hub
+              env:
+                  DOCKER_USERNAME: "${GITHUB_ACTOR}"
+                  DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+              run: echo -n "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
+            - name: Publish the Docker image
+              run: docker push "${GITHUB_REPOSITORY}":"${GITHUB_REF##*/}"
